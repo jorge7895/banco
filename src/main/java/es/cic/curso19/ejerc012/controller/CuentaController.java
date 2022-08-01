@@ -43,7 +43,7 @@ public class CuentaController {
 	}
 
 	@DeleteMapping("/{id}")
-	public void delete(long id) {
+	public void delete(@PathVariable(name ="id") long id) {
 		this.cuentaService.delete(id);
 	}
 }

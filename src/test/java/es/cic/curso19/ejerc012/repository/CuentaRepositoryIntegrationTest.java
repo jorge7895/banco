@@ -28,7 +28,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import es.cic.curso19.ejerc012.model.Cuenta;
 import es.cic.curso19.ejerc012.repository.CuentaRepository;
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
@@ -52,12 +51,14 @@ class CuentaRepositoryIntegrationTest {
 
 		cuenta1.setTitular("Paco");
 		cuenta1.setImporte(50);
+		cuenta1.setNumeroCuenta("12345123451234512345");
 		em.persist(cuenta1);
 
 		cuenta2 = new Cuenta();
 
 		cuenta2.setTitular("Pepe");
 		cuenta2.setImporte(50000);
+		cuenta2.setNumeroCuenta("67890678906789067890");
 		em.persist(cuenta2);
 	}
 
@@ -115,6 +116,17 @@ class CuentaRepositoryIntegrationTest {
 		
 		assertThat(cuentaLeida.getImporte() , is(1000.0));
 		
+	}
+	
+	@Test
+	void testDelete() throws Exception {
+		mvc.perform(delete("/cuentas/{id}", cuenta2.getId())
+				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+		.andDo(print())
+		.andExpect(status().isOk());
+		
+		Cuenta cuentaLeida = em.find(Cuenta.class, cuenta2.getId());
+		assertThat(cuentaLeida, is(nullValue()));
 	}
 
 }

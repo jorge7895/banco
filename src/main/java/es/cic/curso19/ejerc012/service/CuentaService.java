@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import es.cic.curso19.ejerc012.model.Cuenta;
 import es.cic.curso19.ejerc012.repository.CuentaRepository;
+import es.cic.curso19.ejerc012.util.OperacionUtil;
+
 
 @Service
 @Transactional
@@ -17,11 +19,9 @@ public class CuentaService {
 	@Autowired
 	private CuentaRepository cuentaRepository;
 	
-//	@Autowired
-//	private SesionUtil sesionUtil;
-//	
-//	@Autowired
-//	private SalaUtil salaUtil;
+	@Autowired
+	private OperacionUtil operacionUtil;
+
 
 	public Cuenta create(Cuenta cuenta) {
 

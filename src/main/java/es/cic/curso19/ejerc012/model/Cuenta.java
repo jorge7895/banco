@@ -16,9 +16,11 @@ public class Cuenta {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long Id;
-
-	// private String numeroCuenta; CADENA DE 20 CARACTERES????
+	private Long Id;
+	
+	@Column(name = "numero_cuenta", nullable = false)
+	private String numeroCuenta;
+	
 	@Column(name = "titular", nullable = false)
 	private String Titular;
 
@@ -26,11 +28,11 @@ public class Cuenta {
 	@Column(name = "importe", nullable = false)
 	private double Importe;
 
-	public long getId() {
+	public Long getId() {
 		return Id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		Id = id;
 	}
 
@@ -67,9 +69,18 @@ public class Cuenta {
 		return Id == other.Id && Objects.equals(Titular, other.Titular);
 	}
 
+	public String getNumeroCuenta() {
+		return numeroCuenta;
+	}
+
+	public void setNumeroCuenta(String numeroCuenta) {
+		this.numeroCuenta = numeroCuenta;
+	}
+
 	@Override
 	public String toString() {
-		return "Cuenta [Id=" + Id + ", Titular=" + Titular + "]";
+		return "Cuenta [Id=" + Id + ", numeroCuenta=" + numeroCuenta + ", Titular=" + Titular + ", Importe=" + Importe
+				+ "]";
 	}
 
 }

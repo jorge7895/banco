@@ -19,7 +19,7 @@ public class CuentaRepository {
 		return cuenta;
 	}
 
-	public Cuenta read(Long id) {
+	public Cuenta read(long id) {
 		return em.find(Cuenta.class, id);
 	}
 
