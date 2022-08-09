@@ -10,4 +10,12 @@ public class CuentaUtil {
 			throw new CuentaException("El número de cuenta es erroneo");
 		}
 	}
+	
+	
+	public void cuentasDistintas(String cuentaOrigen, String cuentaDestino) {
+		
+		if (cuentaOrigen.equalsIgnoreCase(cuentaDestino)) {
+			throw new CuentaException("Cuenta de origen y destino son iguales");
+		}
+	}
 }

@@ -1,7 +1,7 @@
 package es.cic.curso19.ejerc012;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -22,13 +22,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.Ingreso;
 import es.cic.curso19.ejerc012.model.Operacion;
 import es.cic.curso19.ejerc012.model.TipoOperacion;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class OperacionIntegrationTest {
+class IngresoIntegrationTest {
 
 	@Autowired
 	private MockMvc mvc;
@@ -57,8 +58,8 @@ class OperacionIntegrationTest {
 		entityManager.persist(cuenta02);
 	}
 	
-	@Test 
-	void testMovimientosPorCuenta() throws Exception {
+	@Test
+	void testCreateIngreso() throws Exception {
 		
 		Operacion operacion = new Operacion();
 		operacion.setCuenta(cuenta01);
@@ -66,43 +67,61 @@ class OperacionIntegrationTest {
 		operacion.setCantidad(200);
 		operacion.setActiva(true);
 		
-		entityManager.persist(operacion);
+		Ingreso ingreso = new Ingreso();
+		ingreso.setActiva(true);
+		ingreso.setOperacion(operacion);
 		
-		Operacion operacion2 = new Operacion();
-		operacion2.setCuenta(cuenta01);
-		operacion2.setTipoOperacion(TipoOperacion.INGRESO);
-		operacion2.setCantidad(500);
-		operacion2.setActiva(true);
-		
-		entityManager.persist(operacion2);
-		
-		mvc.perform(get("/operacion/movimientos/{1}",cuenta01)
+		mvc.perform(post("/operacion/ingreso")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(cuenta01)))
+				.content(objectMapper.writeValueAsString(ingreso)))
 		.andDo(print())
 		.andExpect(status().is2xxSuccessful())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.length()",is(2)))
-		;
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.operacion.cuenta.importe", is(1200.0)));
 	}
 	
-	@Test 
-	void testCuentasRelevantes() throws Exception {
+	@Test
+	void testCreateIngresoNegativo() throws Exception {
 		
-		for (int i = 0; i < 11; i++) {
-			Operacion operacion2 = new Operacion();
-			operacion2.setCuenta(cuenta01);
-			operacion2.setTipoOperacion(TipoOperacion.INGRESO);
-			operacion2.setCantidad(5000 + i);
-			operacion2.setActiva(true);
-			
-			entityManager.persist(operacion2);
-		}
+		Operacion operacion = new Operacion();
+		operacion.setCuenta(cuenta01);
+		operacion.setTipoOperacion(TipoOperacion.INGRESO);
+		operacion.setCantidad(-200);
+		operacion.setActiva(true);
 		
-		mvc.perform(get("/operacion/cuentas"))
+		Ingreso ingreso = new Ingreso();
+		ingreso.setActiva(true);
+		ingreso.setOperacion(operacion);
+		
+		mvc.perform(post("/operacion/ingreso")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(ingreso)))
 		.andDo(print())
-		.andExpect(status().is2xxSuccessful())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.length()",is(1)))
-		;
+		.andExpect(status().is5xxServerError());
 	}
+	
+	@Test
+	void testCreateIngresoCuentaMal() throws Exception {
+		
+		Operacion operacion = new Operacion();
+		cuenta01.setNumeroCuenta("cuenta no valida pa que casque");
+		operacion.setCuenta(cuenta01);
+		operacion.setTipoOperacion(TipoOperacion.INGRESO);
+		operacion.setCantidad(200);
+		operacion.setActiva(true);
+		
+		Ingreso ingreso = new Ingreso();
+		ingreso.setActiva(true);
+		ingreso.setOperacion(operacion);
+		
+		mvc.perform(post("/operacion/ingreso")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(ingreso)))
+		.andDo(print())
+		.andExpect(status().is5xxServerError());
+	}
+
 }
