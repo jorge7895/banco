@@ -14,8 +14,11 @@ public class OperacionUtil {
 		if (operacion.getCantidad()<= 0) {
 			throw new OperacionException(operacion.getId(),"El importe de la transferencia no es válido");
 		}
-		if (operacion.getCuenta().getImporte() < operacion.getCantidad()) {
+		if (operacion.getCuenta().getImporte() < operacion.getCantidad() - 50) {
 			throw new OperacionException(operacion.getId(),"El saldo es insuficiente");
+		}
+		if (operacion.getCuenta().getImporte() <= -50) {
+			throw new OperacionException(operacion.getId(),"¡Está en números rojos!");
 		}
 	}
 	

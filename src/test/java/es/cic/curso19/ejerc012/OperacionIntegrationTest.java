@@ -99,6 +99,50 @@ class OperacionIntegrationTest {
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 		.andExpect(jsonPath("$.operacion.cuenta.importe", is(800.0)));
 	}
+	
+	@Test
+	void testCreateExtraccionNumerosRojos() throws Exception {
+		
+		Operacion operacion = new Operacion();
+		operacion.setCuenta(cuenta01);
+		operacion.setTipoOperacion(TipoOperacion.EXTRACCION);
+		operacion.setCantidad(1049);
+		operacion.setActiva(true);
+		
+		Extraccion extraccion = new Extraccion();
+		extraccion.setActiva(true);
+		extraccion.setOperacion(operacion);
+		
+		mvc.perform(post("/operaciones/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is2xxSuccessful())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.operacion.cuenta.importe", is(-49.0)));
+	}
+	
+	@Test
+	void testCreateExtraccionSinFondos() throws Exception {
+		
+		Operacion operacion = new Operacion();
+		operacion.setCuenta(cuenta01);
+		operacion.setTipoOperacion(TipoOperacion.EXTRACCION);
+		operacion.setCantidad(1051);
+		operacion.setActiva(true);
+		
+		Extraccion extraccion = new Extraccion();
+		extraccion.setActiva(true);
+		extraccion.setOperacion(operacion);
+		
+		mvc.perform(post("/operaciones/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is5xxServerError());
+	}
 
 	
 	@Test
@@ -149,8 +193,28 @@ class OperacionIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(cuenta01)))
 		.andDo(print())
-		.andExpect(status().isOk())
+		.andExpect(status().is2xxSuccessful())
 		.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.length()",is(2)))
+		;
+	}
+	
+	@Test 
+	void testCuentasRelevantes() throws Exception {
+		
+		for (int i = 0; i < 11; i++) {
+			Operacion operacion2 = new Operacion();
+			operacion2.setCuenta(cuenta01);
+			operacion2.setTipoOperacion(TipoOperacion.INGRESO);
+			operacion2.setCantidad(5000 + i);
+			operacion2.setActiva(true);
+			
+			entityManager.persist(operacion2);
+		}
+		
+		mvc.perform(get("/operaciones/cuentas"))
+		.andDo(print())
+		.andExpect(status().is2xxSuccessful())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON)).andExpect(jsonPath("$.length()",is(1)))
 		;
 	}
 }

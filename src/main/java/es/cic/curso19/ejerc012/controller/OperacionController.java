@@ -3,6 +3,9 @@ package es.cic.curso19.ejerc012.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,22 +39,42 @@ public class OperacionController {
 	private TransferenciaService transferenciaService;
 	
 	@PostMapping("/ingreso")
-	public Ingreso crearIngreso(@RequestBody Ingreso ingreso) {
-		return ingresoService.crear(ingreso);
+	public ResponseEntity<Ingreso> crearIngreso(@RequestBody Ingreso ingreso) {
+		
+		ingreso = ingresoService.crear(ingreso);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(ingreso);
 	}
 	
 	@PostMapping("/extraccion")
-	public Extraccion crearExtraccion(@RequestBody Extraccion extraccion) {
-		return extraccionService.crear(extraccion);
+	public ResponseEntity<Extraccion> crearExtraccion(@RequestBody Extraccion extraccion) {
+		
+		extraccion = extraccionService.crear(extraccion);
+		
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(extraccion);
 	}
 	
 	@PostMapping("/transferencia")
-	public Transferencia crearTransferencia(@RequestBody Transferencia transferencia) {
-		return transferenciaService.crear(transferencia);
+	public ResponseEntity<Transferencia> crearTransferencia(@RequestBody Transferencia transferencia) {
+		
+		transferencia = transferenciaService.crear(transferencia); 
+		
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(transferencia); 
 	}
 	
 	@GetMapping("/movimientos/{cuenta}")
-	public List<Operacion> movimientosCuenta(@RequestBody Cuenta cuenta){
-		return operacionService.movimientosCuenta(cuenta);
+	public ResponseEntity<List<Operacion>> movimientosCuenta(@RequestBody Cuenta cuenta){
+		
+		List<Operacion> resultados = operacionService.movimientosCuenta(cuenta);
+		
+		return ResponseEntity.status(HttpStatus.ACCEPTED).contentType(MediaType.APPLICATION_JSON).body(resultados);
+	}
+	
+	@GetMapping("/cuentas")
+	public ResponseEntity<List<Cuenta>> cuentasRelevantes(){
+		
+		List<Cuenta> resultados = operacionService.cuentasRelevantes();
+		
+		return ResponseEntity.status(HttpStatus.ACCEPTED).contentType(MediaType.APPLICATION_JSON).body(resultados);
 	}
 }
