@@ -1,9 +1,10 @@
 package es.cic.curso19.ejerc012.repository;
 
-import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
 import org.springframework.stereotype.Repository;
 
 import es.cic.curso19.ejerc012.model.Cuenta;
@@ -19,20 +20,17 @@ public class CuentaRepository {
 		return cuenta;
 	}
 
-	public Cuenta read(long id) {
-		return em.find(Cuenta.class, id);
-	}
+	public Optional<Cuenta> findById(Long id) {
 
-	public List<Cuenta> read() {
-		return em.createQuery("SELECT c FROM Cuenta c", Cuenta.class).getResultList();
-	}
-
-	public Cuenta update(Cuenta cuenta) {
-		return em.merge(cuenta);
+		return Optional.of(em.find(Cuenta.class, id));
 	}
 
 	public void delete(Long id) {
-		em.remove(this.read(id));
+		Optional<Cuenta> cuenta = findById(id);
+
+		if (cuenta.isPresent()) {
+			em.remove(cuenta.get());
+		}
 	}
 
 }

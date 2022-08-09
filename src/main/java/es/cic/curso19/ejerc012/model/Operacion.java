@@ -2,12 +2,13 @@ package es.cic.curso19.ejerc012.model;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.validation.constraints.Min;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.Min;
 
 @Entity
 public class Operacion {
@@ -16,25 +17,23 @@ public class Operacion {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
-	@Column(name = "id_cuenta", nullable = false)
-	private long idCuenta;
-	
-	@Column(name = "tipo", nullable = false)
-	private TipoOperacion tipo;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	private Cuenta cuenta;
 	
 	@Min(0)
-	@Column(name = "cantidad", nullable = false)
 	private double cantidad;
+	
+	private TipoOperacion tipoOperacion;
+	private boolean activa;
 	
 	public Operacion() {
 		super();
 	}
 
-	public Operacion(long id, long idCuenta, TipoOperacion tipo, double cantidad) {
+	public Operacion(long id, Cuenta cuenta, double cantidad) {
 		super();
 		this.id = id;
-		this.idCuenta = idCuenta;
-		this.tipo = tipo;
+		this.cuenta = cuenta;
 		this.cantidad = cantidad;
 	}
 
@@ -45,21 +44,29 @@ public class Operacion {
 	public void setId(long id) {
 		this.id = id;
 	}
-
-	public long getIdCuenta() {
-		return idCuenta;
+	
+	public TipoOperacion getTipoOperacion() {
+		return tipoOperacion;
 	}
 
-	public void setIdCuenta(long idCuenta) {
-		this.idCuenta = idCuenta;
+	public void setTipoOperacion(TipoOperacion tipoOperacion) {
+		this.tipoOperacion = tipoOperacion;
 	}
 
-	public TipoOperacion getTipo() {
-		return tipo;
+	public Cuenta getCuenta() {
+		return cuenta;
 	}
 
-	public void setTipo(TipoOperacion tipo) {
-		this.tipo = tipo;
+	public void setCuenta(Cuenta cuenta) {
+		this.cuenta = cuenta;
+	}
+
+	public boolean isActiva() {
+		return activa;
+	}
+
+	public void setActiva(boolean activa) {
+		this.activa = activa;
 	}
 
 	public double getCantidad() {
@@ -89,7 +96,8 @@ public class Operacion {
 
 	@Override
 	public String toString() {
-		return "Operacion [id=" + id + ", idCuenta=" + idCuenta + ", tipo=" + tipo + ", cantidad=" + cantidad + "]";
+		return "Operacion [id=" + id + ", cuenta=" + cuenta + ", cantidad=" + cantidad + ", tipoOperacion="
+				+ tipoOperacion + ", activa=" + activa + "]";
 	}
 	
 }
