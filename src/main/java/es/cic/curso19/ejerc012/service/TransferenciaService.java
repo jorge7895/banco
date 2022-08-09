@@ -26,17 +26,40 @@ public class TransferenciaService {
 		
 		operacionUtil.comprobarCantidad(operacion);
 		cuentaUtil.cuentaValida(cuenta.getNumeroCuenta());
+		
 		if (transferencia.getCuentaAjenaInterna() != null) {
 			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaInterna().getNumeroCuenta());
-			operacionUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaInterna().getNumeroCuenta());
+			cuentaUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaInterna().getNumeroCuenta());
 		}else {
 			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaExterna());
-			operacionUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaExterna());
+			cuentaUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaExterna());
 		}
 		
 		operacionUtil.actualizarSaldo(operacion);
 		
 		return transferenciaRepository.crear(transferencia);
 		
+	}
+	
+	public Transferencia recibir(Transferencia transferencia) {
+		
+		Operacion operacion = transferencia.getOperacion();
+		Cuenta cuenta = transferencia.getOperacion().getCuenta();
+		
+		operacionUtil.comprobarCantidad(operacion);
+		cuentaUtil.cuentaValida(cuenta.getNumeroCuenta());
+		
+		if (transferencia.getCuentaAjenaInterna()!=null) {
+			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaInterna().getNumeroCuenta());
+			cuentaUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaInterna().getNumeroCuenta());
+		}else {
+			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaExterna());
+			cuentaUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaExterna());
+		}
+		
+		double nuevoSaldo = (operacion.getCuenta().getImporte() + operacion.getCantidad());
+		operacion.getCuenta().setImporte(nuevoSaldo);
+		
+		return transferenciaRepository.crear(transferencia);		
 	}
 }

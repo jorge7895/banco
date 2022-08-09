@@ -22,12 +22,6 @@ public class OperacionUtil {
 		}
 	}
 	
-	public void cuentasDistintas(String cuentaOrigen, String cuentaDestino) {
-		
-		if (cuentaOrigen.equalsIgnoreCase(cuentaDestino)) {
-		}
-	}
-	
 	public <S extends Operacion> void actualizarSaldo(S operacion) {
 		
 		double nuevoSaldo;

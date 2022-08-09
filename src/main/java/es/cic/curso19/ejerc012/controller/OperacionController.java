@@ -23,7 +23,7 @@ import es.cic.curso19.ejerc012.service.OperacionService;
 import es.cic.curso19.ejerc012.service.TransferenciaService;
 
 @RestController
-@RequestMapping(path = "/operaciones")
+@RequestMapping(path = "/operacion")
 public class OperacionController {
 
 	@Autowired
@@ -58,6 +58,14 @@ public class OperacionController {
 	public ResponseEntity<Transferencia> crearTransferencia(@RequestBody Transferencia transferencia) {
 		
 		transferencia = transferenciaService.crear(transferencia); 
+		
+		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(transferencia); 
+	}
+	
+	@PostMapping("/ingreso/transferencia")
+	public ResponseEntity<Transferencia> recibirTransferencia(@RequestBody Transferencia transferencia) {
+		
+		transferencia = transferenciaService.recibir(transferencia); 
 		
 		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(transferencia); 
 	}
