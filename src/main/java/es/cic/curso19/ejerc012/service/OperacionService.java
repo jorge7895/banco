@@ -13,14 +13,17 @@ import es.cic.curso19.ejerc012.repository.OperacionRepository;
 
 @Service
 @Transactional
-public class OperacionService {
-
+public class OperacionService{
+	
 	@Autowired
 	private OperacionRepository operacionRepository;
 
-	
-	public List<Operacion> movimientosCuenta(Cuenta cuenta){
-		
+	public List<Operacion> movimientosCuenta(Cuenta cuenta) {
 		return operacionRepository.movimientosCuenta(cuenta);
 	}
+
+	public List<Cuenta> cuentasRelevantes() {
+		return operacionRepository.cuentasRelevantes();
+	}
+
 }
