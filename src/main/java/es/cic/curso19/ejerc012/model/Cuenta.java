@@ -9,52 +9,50 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Min;
 
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-
 @Entity
 public class Cuenta {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long Id;
+	private Long id;
 	
 	@Column(name = "numero_cuenta", nullable = false)
 	private String numeroCuenta;
 	
 	@Column(name = "titular", nullable = false)
-	private String Titular;
+	private String titular;
 
 	@Min(0)
 	@Column(name = "importe", nullable = false)
-	private double Importe;
+	private double importe;
 
 	public Long getId() {
-		return Id;
+		return id;
 	}
 
 	public void setId(Long id) {
-		Id = id;
+		this.id = id;
 	}
 
 	public String getTitular() {
-		return Titular;
+		return titular;
 	}
 
 	public void setTitular(String titular) {
-		Titular = titular;
+		this.titular = titular;
 	}
 
 	public double getImporte() {
-		return Importe;
+		return importe;
 	}
 
 	public void setImporte(double importe) {
-		Importe = importe;
+		this.importe = importe;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(Id);
+		return Objects.hash(id);
 	}
 
 	@Override
@@ -66,7 +64,7 @@ public class Cuenta {
 		if (getClass() != obj.getClass())
 			return false;
 		Cuenta other = (Cuenta) obj;
-		return Id == other.Id && Objects.equals(Titular, other.Titular);
+		return id == other.id && Objects.equals(titular, other.titular);
 	}
 
 	public String getNumeroCuenta() {
@@ -79,7 +77,7 @@ public class Cuenta {
 
 	@Override
 	public String toString() {
-		return "Cuenta [Id=" + Id + ", numeroCuenta=" + numeroCuenta + ", Titular=" + Titular + ", Importe=" + Importe
+		return "Cuenta [Id=" + id + ", numeroCuenta=" + numeroCuenta + ", Titular=" + titular + ", Importe=" + importe
 				+ "]";
 	}
 
