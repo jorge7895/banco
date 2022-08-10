@@ -1,31 +1,24 @@
-package es.cic.curso19.ejerc012.model;
+package es.cic.curso19.ejerc012.model.acciones;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
-@Entity
-public class Transferencia {
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
 
+@Entity
+public class Ingreso {
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long id;
 	
 	@OneToOne(targetEntity = Operacion.class)
 	private Operacion operacion;
-	
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	private Cuenta cuentaAjenaInterna;
-	
-	@Column(nullable = true)
-	private String cuentaAjenaExterna;
 	
 	private boolean activa;
 
@@ -43,22 +36,6 @@ public class Transferencia {
 
 	public void setOperacion(Operacion operacion) {
 		this.operacion = operacion;
-	}
-
-	public Cuenta getCuentaAjenaInterna() {
-		return cuentaAjenaInterna;
-	}
-
-	public void setCuentaAjenaInterna(Cuenta cuentaAjenaInterna) {
-		this.cuentaAjenaInterna = cuentaAjenaInterna;
-	}
-
-	public String getCuentaAjenaExterna() {
-		return cuentaAjenaExterna;
-	}
-
-	public void setCuentaAjenaExterna(String cuentaAjenaExterna) {
-		this.cuentaAjenaExterna = cuentaAjenaExterna;
 	}
 
 	public boolean isActiva() {
@@ -82,13 +59,13 @@ public class Transferencia {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Transferencia other = (Transferencia) obj;
+		Ingreso other = (Ingreso) obj;
 		return id == other.id;
 	}
 
 	@Override
 	public String toString() {
-		return "Transferencia [id=" + id + ", operacion=" + operacion + ", cuentaAjenaInterna=" + cuentaAjenaInterna
-				+ ", cuentaAjenaExterna=" + cuentaAjenaExterna + ", activa=" + activa + "]";
+		return "Ingreso [id=" + id + ", activa=" + activa + "]";
 	}
+
 }

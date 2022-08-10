@@ -11,8 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
 import es.cic.curso19.ejerc012.service.CuentaService;
 
 @RestController
@@ -26,14 +27,38 @@ public class CuentaController {
 	@PostMapping
 	public ResponseEntity<Cuenta> create(@RequestBody Cuenta cuenta) {
 		
-		
-		cuenta = cuentaService.create(cuenta);
-		return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(cuenta);
+		try {
+			
+			cuenta = cuentaService.create(cuenta);
+			return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(cuenta);
+			
+		}catch (RuntimeException Re) {
+
+			StringBuilder mensaje = new StringBuilder();
+			mensaje.append("Error al crear la cuenta. ");
+			mensaje.append(Re.getMessage());
+
+			throw new ResponseStatusException(1100, mensaje.toString(), Re);
+
+		}
 	}
 
 	@DeleteMapping("/borrar/{id}")
 	@ResponseStatus(code = HttpStatus.OK)
 	public void delete(@PathVariable(name = "id") long id) {
-		cuentaService.delete(id);
+		
+		try {
+			
+			cuentaService.delete(id);
+			
+		}catch (RuntimeException Re) {
+
+			StringBuilder mensaje = new StringBuilder();
+			mensaje.append("Error al borrar la cuenta. ");
+			mensaje.append(Re.getMessage());
+
+			throw new ResponseStatusException(1101, mensaje.toString(), Re);
+
+		}
 	}
 }

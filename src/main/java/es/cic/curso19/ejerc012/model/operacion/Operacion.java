@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012.model;
+package es.cic.curso19.ejerc012.model.operacion;
 
 import java.util.Objects;
 
@@ -9,6 +9,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
 
 @Entity
 public class Operacion {
@@ -18,6 +21,7 @@ public class Operacion {
 	private long id;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@NotNull(message = "Debe aportar la cuenta para realizar la operación")
 	private Cuenta cuenta;
 	
 	@Min(0)

@@ -21,10 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
-import es.cic.curso19.ejerc012.model.Ingreso;
-import es.cic.curso19.ejerc012.model.Operacion;
-import es.cic.curso19.ejerc012.model.TipoOperacion;
+import es.cic.curso19.ejerc012.model.acciones.Ingreso;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
+import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,6 +42,8 @@ class IngresoIntegrationTest {
 	
 	private Cuenta cuenta01;
 	private Cuenta cuenta02;
+	private Operacion operacion;
+	private Ingreso ingreso;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -56,20 +58,20 @@ class IngresoIntegrationTest {
 		cuenta02.setTitular("Manuel");
 		cuenta02.setImporte(1000);
 		entityManager.persist(cuenta02);
-	}
-	
-	@Test
-	void testCreateIngreso() throws Exception {
 		
-		Operacion operacion = new Operacion();
+		operacion = new Operacion();
 		operacion.setCuenta(cuenta01);
 		operacion.setTipoOperacion(TipoOperacion.INGRESO);
 		operacion.setCantidad(200);
 		operacion.setActiva(true);
 		
-		Ingreso ingreso = new Ingreso();
+		ingreso = new Ingreso();
 		ingreso.setActiva(true);
 		ingreso.setOperacion(operacion);
+	}
+	
+	@Test
+	void testCreateIngreso() throws Exception {
 		
 		mvc.perform(post("/operacion/ingreso")
 				.accept(MediaType.APPLICATION_JSON)
@@ -84,44 +86,28 @@ class IngresoIntegrationTest {
 	@Test
 	void testCreateIngresoNegativo() throws Exception {
 		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.INGRESO);
 		operacion.setCantidad(-200);
-		operacion.setActiva(true);
-		
-		Ingreso ingreso = new Ingreso();
-		ingreso.setActiva(true);
-		ingreso.setOperacion(operacion);
 		
 		mvc.perform(post("/operacion/ingreso")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(ingreso)))
 		.andDo(print())
-		.andExpect(status().is5xxServerError());
+		.andExpect(status().is(1000));
 	}
 	
 	@Test
 	void testCreateIngresoCuentaMal() throws Exception {
 		
-		Operacion operacion = new Operacion();
 		cuenta01.setNumeroCuenta("cuenta no valida pa que casque");
 		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.INGRESO);
-		operacion.setCantidad(200);
-		operacion.setActiva(true);
-		
-		Ingreso ingreso = new Ingreso();
-		ingreso.setActiva(true);
-		ingreso.setOperacion(operacion);
 		
 		mvc.perform(post("/operacion/ingreso")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(ingreso)))
 		.andDo(print())
-		.andExpect(status().is5xxServerError());
+		.andExpect(status().is(1000));
 	}
 
 }

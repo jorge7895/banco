@@ -21,9 +21,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
-import es.cic.curso19.ejerc012.model.Operacion;
-import es.cic.curso19.ejerc012.model.TipoOperacion;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
+import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,6 +41,8 @@ class OperacionIntegrationTest {
 	
 	private Cuenta cuenta01;
 	private Cuenta cuenta02;
+	private Operacion operacion;
+	private Operacion operacion1;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -55,12 +57,8 @@ class OperacionIntegrationTest {
 		cuenta02.setTitular("Manuel");
 		cuenta02.setImporte(1000);
 		entityManager.persist(cuenta02);
-	}
-	
-	@Test 
-	void testMovimientosPorCuenta() throws Exception {
 		
-		Operacion operacion = new Operacion();
+		operacion = new Operacion();
 		operacion.setCuenta(cuenta01);
 		operacion.setTipoOperacion(TipoOperacion.INGRESO);
 		operacion.setCantidad(200);
@@ -68,13 +66,17 @@ class OperacionIntegrationTest {
 		
 		entityManager.persist(operacion);
 		
-		Operacion operacion2 = new Operacion();
-		operacion2.setCuenta(cuenta01);
-		operacion2.setTipoOperacion(TipoOperacion.INGRESO);
-		operacion2.setCantidad(500);
-		operacion2.setActiva(true);
+		operacion1 = new Operacion();
+		operacion1.setCuenta(cuenta01);
+		operacion1.setTipoOperacion(TipoOperacion.INGRESO);
+		operacion1.setCantidad(500);
+		operacion1.setActiva(true);
 		
-		entityManager.persist(operacion2);
+		entityManager.persist(operacion1);
+	}
+	
+	@Test 
+	void testMovimientosPorCuenta() throws Exception {
 		
 		mvc.perform(get("/operacion/movimientos/{1}",cuenta01)
 				.accept(MediaType.APPLICATION_JSON)

@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012.model;
+package es.cic.curso19.ejerc012.model.cuenta;
 
 import java.util.Objects;
 

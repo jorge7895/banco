@@ -9,8 +9,8 @@ import javax.persistence.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
-import es.cic.curso19.ejerc012.model.Operacion;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
 
 @Repository
 public class OperacionRepository{

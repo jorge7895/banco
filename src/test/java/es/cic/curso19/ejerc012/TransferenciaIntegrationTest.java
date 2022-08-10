@@ -21,10 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
-import es.cic.curso19.ejerc012.model.Operacion;
-import es.cic.curso19.ejerc012.model.TipoOperacion;
-import es.cic.curso19.ejerc012.model.Transferencia;
+import es.cic.curso19.ejerc012.model.acciones.Transferencia;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
+import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -41,6 +41,8 @@ public class TransferenciaIntegrationTest {
 	
 	private Cuenta cuenta01;
 	private Cuenta cuenta02;
+	private Operacion operacion;
+	private Transferencia transferencia;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -55,21 +57,21 @@ public class TransferenciaIntegrationTest {
 		cuenta02.setTitular("Manuel");
 		cuenta02.setImporte(1000);
 		entityManager.persist(cuenta02);
-	}
-
-	@Test
-	void testCreateTransferenciaInterna() throws Exception {
 		
-		Operacion operacion = new Operacion();
+		operacion = new Operacion();
 		operacion.setCuenta(cuenta01);
 		operacion.setTipoOperacion(TipoOperacion.TRANSFERENCIA);
 		operacion.setCantidad(200);
 		operacion.setActiva(true);
 		
-		Transferencia transferencia = new Transferencia();
+		transferencia = new Transferencia();
 		transferencia.setActiva(true);
 		transferencia.setOperacion(operacion);
 		transferencia.setCuentaAjenaInterna(cuenta02);
+	}
+
+	@Test
+	void testCreateTransferenciaInterna() throws Exception {
 		
 		mvc.perform(post("/operacion/transferencia")
 				.accept(MediaType.APPLICATION_JSON)
@@ -84,15 +86,6 @@ public class TransferenciaIntegrationTest {
 	@Test
 	void testCreateTransferenciaInternaCuentaMal() throws Exception {
 		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.TRANSFERENCIA);
-		operacion.setCantidad(200);
-		operacion.setActiva(true);
-		
-		Transferencia transferencia = new Transferencia();
-		transferencia.setActiva(true);
-		transferencia.setOperacion(operacion);
 		cuenta02.setNumeroCuenta("esta cuenta no vale");
 		transferencia.setCuentaAjenaInterna(cuenta02);
 		
@@ -101,21 +94,12 @@ public class TransferenciaIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(transferencia)))
 		.andDo(print())
-		.andExpect(status().is5xxServerError());
+		.andExpect(status().is(1002));
 	}
 	
 	@Test
 	void testCreateTransferenciaExterna() throws Exception {
 		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.TRANSFERENCIA);
-		operacion.setCantidad(200);
-		operacion.setActiva(true);
-		
-		Transferencia transferencia = new Transferencia();
-		transferencia.setActiva(true);
-		transferencia.setOperacion(operacion);
 		transferencia.setCuentaAjenaExterna("12345678912345678913");
 		
 		mvc.perform(post("/operacion/transferencia")
@@ -129,85 +113,34 @@ public class TransferenciaIntegrationTest {
 	}
 	
 	@Test
-	void testCreateTransferenciaExternaCuentaMal() throws Exception {
-		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.TRANSFERENCIA);
-		operacion.setCantidad(200);
-		operacion.setActiva(true);
-		
-		Transferencia transferencia = new Transferencia();
-		transferencia.setActiva(true);
-		transferencia.setOperacion(operacion);
-		transferencia.setCuentaAjenaExterna("esta cuenta no vale");
-		
-		mvc.perform(post("/operacion/transferencia")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(transferencia)))
-		.andDo(print())
-		.andExpect(status().is5xxServerError());
-	}
-	
-	@Test
 	void testCreateTransferenciaCuentaMal() throws Exception {
 		
-		Operacion operacion = new Operacion();
 		cuenta01.setNumeroCuenta("esta cuenta esta mal");
 		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.TRANSFERENCIA);
-		operacion.setCantidad(200);
-		operacion.setActiva(true);
-		
-		Transferencia transferencia = new Transferencia();
-		transferencia.setActiva(true);
-		transferencia.setOperacion(operacion);
-		transferencia.setCuentaAjenaExterna("12345678912345678913");
 		
 		mvc.perform(post("/operacion/transferencia")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(transferencia)))
 		.andDo(print())
-		.andExpect(status().is5xxServerError());
+		.andExpect(status().is(1002));
 	}
 	
 	@Test
 	void testCreateTransferenciaNegativa() throws Exception {
 		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.TRANSFERENCIA);
 		operacion.setCantidad(-200);
-		operacion.setActiva(true);
-		
-		Transferencia transferencia = new Transferencia();
-		transferencia.setActiva(true);
-		transferencia.setOperacion(operacion);
-		transferencia.setCuentaAjenaExterna("12345678912345678913");
 		
 		mvc.perform(post("/operacion/transferencia")
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(transferencia)))
 		.andDo(print())
-		.andExpect(status().is5xxServerError());
+		.andExpect(status().is(1002));
 	}
 	
 	@Test
 	void testRecibirTransferencia() throws Exception {
-		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.TRANSFERENCIA);
-		operacion.setCantidad(200);
-		operacion.setActiva(true);
-		
-		Transferencia transferencia = new Transferencia();
-		transferencia.setActiva(true);
-		transferencia.setOperacion(operacion);
-		transferencia.setCuentaAjenaInterna(cuenta02);
 		
 		mvc.perform(post("/operacion/ingreso/transferencia")
 				.accept(MediaType.APPLICATION_JSON)

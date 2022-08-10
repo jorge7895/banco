@@ -7,7 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
 
 @Repository
 public class CuentaRepository {
