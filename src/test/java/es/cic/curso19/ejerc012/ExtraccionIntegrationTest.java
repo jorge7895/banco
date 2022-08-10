@@ -21,10 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
-import es.cic.curso19.ejerc012.model.Extraccion;
-import es.cic.curso19.ejerc012.model.Operacion;
-import es.cic.curso19.ejerc012.model.TipoOperacion;
+import es.cic.curso19.ejerc012.model.acciones.Extraccion;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
+import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -42,6 +42,8 @@ class ExtraccionIntegrationTest {
 	
 	private Cuenta cuenta01;
 	private Cuenta cuenta02;
+	private Operacion operacion;
+	private Extraccion extraccion;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -56,20 +58,20 @@ class ExtraccionIntegrationTest {
 		cuenta02.setTitular("Manuel");
 		cuenta02.setImporte(1000);
 		entityManager.persist(cuenta02);
-	}
-	
-	@Test
-	void testCreateExtraccion() throws Exception {
 		
-		Operacion operacion = new Operacion();
+		operacion = new Operacion();
 		operacion.setCuenta(cuenta01);
 		operacion.setTipoOperacion(TipoOperacion.EXTRACCION);
 		operacion.setCantidad(200);
 		operacion.setActiva(true);
 		
-		Extraccion extraccion = new Extraccion();
+		extraccion = new Extraccion();
 		extraccion.setActiva(true);
 		extraccion.setOperacion(operacion);
+	}
+	
+	@Test
+	void testCreateExtraccion() throws Exception {
 		
 		mvc.perform(post("/operacion/extraccion")
 				.accept(MediaType.APPLICATION_JSON)
@@ -84,14 +86,7 @@ class ExtraccionIntegrationTest {
 	@Test
 	void testCreateExtraccionNumerosRojos() throws Exception {
 		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.EXTRACCION);
 		operacion.setCantidad(1049);
-		operacion.setActiva(true);
-		
-		Extraccion extraccion = new Extraccion();
-		extraccion.setActiva(true);
 		extraccion.setOperacion(operacion);
 		
 		mvc.perform(post("/operacion/extraccion")
@@ -107,14 +102,7 @@ class ExtraccionIntegrationTest {
 	@Test
 	void testCreateExtraccionSinFondos() throws Exception {
 		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.EXTRACCION);
 		operacion.setCantidad(1051);
-		operacion.setActiva(true);
-		
-		Extraccion extraccion = new Extraccion();
-		extraccion.setActiva(true);
 		extraccion.setOperacion(operacion);
 		
 		mvc.perform(post("/operacion/extraccion")
@@ -122,20 +110,13 @@ class ExtraccionIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(extraccion)))
 		.andDo(print())
-		.andExpect(status().is5xxServerError());
+		.andExpect(status().is(1001));
 	}
 	
 	@Test
 	void testCreateExtraccionNegativa() throws Exception {
 		
-		Operacion operacion = new Operacion();
-		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.EXTRACCION);
 		operacion.setCantidad(-1051);
-		operacion.setActiva(true);
-		
-		Extraccion extraccion = new Extraccion();
-		extraccion.setActiva(true);
 		extraccion.setOperacion(operacion);
 		
 		mvc.perform(post("/operacion/extraccion")
@@ -143,7 +124,21 @@ class ExtraccionIntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(extraccion)))
 		.andDo(print())
-		.andExpect(status().is5xxServerError());
+		.andExpect(status().is(1001));
+	}
+	
+	@Test
+	void testCreateExtraccionCuentaNull() throws Exception {
+		
+		operacion.setCuenta(null);
+		extraccion.setOperacion(operacion);
+		
+		mvc.perform(post("/operacion/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is(1001));
 	}
 
 }

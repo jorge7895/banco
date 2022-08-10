@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012.model;
+package es.cic.curso19.ejerc012.model.acciones;
 
 import java.util.Objects;
 
@@ -7,6 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
 
 @Entity
 public class Extraccion {

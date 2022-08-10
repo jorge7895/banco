@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,20 +40,18 @@ class CuentaRepositoryIntegrationTest {
 	@PersistenceContext
 	private EntityManager em;
 
-	private Cuenta cuenta1;
+	private Cuenta cuenta;
 	private Cuenta cuenta2;
 
 	@BeforeEach
 	void setUp()  {
-		cuenta1 = new Cuenta();
-
-		cuenta1.setTitular("Paco");
-		cuenta1.setImporte(50);
-		cuenta1.setNumeroCuenta("12345123451234512345");
-		em.persist(cuenta1);
+		
+		cuenta = new Cuenta();
+		cuenta.setTitular("Paco");
+		cuenta.setImporte(50);
+		cuenta.setNumeroCuenta("12345123451234512345");
 
 		cuenta2 = new Cuenta();
-
 		cuenta2.setTitular("Pepe");
 		cuenta2.setImporte(50000);
 		cuenta2.setNumeroCuenta("67890678906789067890");
@@ -62,10 +60,6 @@ class CuentaRepositoryIntegrationTest {
 
 	@Test
 	public void testCreate() throws Exception {
-		Cuenta cuenta = new Cuenta();
-		cuenta.setTitular("Pepe");
-		cuenta.setImporte(50000);
-		cuenta.setNumeroCuenta("67890678906789067890");
 
 		mvc.perform(post("/cuentas")
 				.accept(MediaType.APPLICATION_JSON)
@@ -74,11 +68,12 @@ class CuentaRepositoryIntegrationTest {
 				.andDo(print())
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$.numeroCuenta", is("67890678906789067890")));
+				.andExpect(jsonPath("$.numeroCuenta", is("12345123451234512345")));
 	}
 	
 	@Test
 	void testDelete() throws Exception {
+		
 		mvc.perform(delete("/cuentas/borrar/{id}", cuenta2.getId())
 				.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
 		.andDo(print())

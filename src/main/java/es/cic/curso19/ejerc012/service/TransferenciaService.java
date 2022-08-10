@@ -3,9 +3,9 @@ package es.cic.curso19.ejerc012.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.cic.curso19.ejerc012.model.Cuenta;
-import es.cic.curso19.ejerc012.model.Operacion;
-import es.cic.curso19.ejerc012.model.Transferencia;
+import es.cic.curso19.ejerc012.model.acciones.Transferencia;
+import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
 import es.cic.curso19.ejerc012.repository.TransferenciaRepository;
 import es.cic.curso19.ejerc012.util.CuentaUtil;
 import es.cic.curso19.ejerc012.util.OperacionUtil;
@@ -25,14 +25,17 @@ public class TransferenciaService {
 		Cuenta cuenta = transferencia.getOperacion().getCuenta();
 		
 		operacionUtil.comprobarCantidad(operacion);
-		cuentaUtil.cuentaValida(cuenta.getNumeroCuenta());
+		cuentaUtil.cuentaValida(cuenta);
 		
 		if (transferencia.getCuentaAjenaInterna() != null) {
-			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaInterna().getNumeroCuenta());
-			cuentaUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaInterna().getNumeroCuenta());
+			
+			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaInterna());
+			cuentaUtil.cuentasDistintas(cuenta, transferencia.getCuentaAjenaInterna().getNumeroCuenta());
+			
 		}else {
-			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaExterna());
-			cuentaUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaExterna());
+			
+			cuentaUtil.cuentasDistintas(cuenta, transferencia.getCuentaAjenaExterna());
+			
 		}
 		
 		operacionUtil.actualizarSaldo(operacion);
@@ -47,14 +50,16 @@ public class TransferenciaService {
 		Cuenta cuenta = transferencia.getOperacion().getCuenta();
 		
 		operacionUtil.comprobarCantidad(operacion);
-		cuentaUtil.cuentaValida(cuenta.getNumeroCuenta());
+		cuentaUtil.cuentaValida(cuenta);
 		
 		if (transferencia.getCuentaAjenaInterna()!=null) {
-			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaInterna().getNumeroCuenta());
-			cuentaUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaInterna().getNumeroCuenta());
+			
+			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaInterna());
+			cuentaUtil.cuentasDistintas(cuenta, transferencia.getCuentaAjenaInterna().getNumeroCuenta());
+			
 		}else {
-			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaExterna());
-			cuentaUtil.cuentasDistintas(cuenta.getNumeroCuenta(), transferencia.getCuentaAjenaExterna());
+			
+			cuentaUtil.cuentasDistintas(cuenta, transferencia.getCuentaAjenaExterna());
 		}
 		
 		double nuevoSaldo = (operacion.getCuenta().getImporte() + operacion.getCantidad());

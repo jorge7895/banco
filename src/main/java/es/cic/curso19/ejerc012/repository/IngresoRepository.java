@@ -7,7 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
-import es.cic.curso19.ejerc012.model.Ingreso;
+import es.cic.curso19.ejerc012.model.acciones.Ingreso;
 
 @Repository
 public class IngresoRepository {

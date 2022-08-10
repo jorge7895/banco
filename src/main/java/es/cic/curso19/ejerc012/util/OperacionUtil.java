@@ -2,9 +2,9 @@ package es.cic.curso19.ejerc012.util;
 
 import org.springframework.stereotype.Component;
 
-import es.cic.curso19.ejerc012.model.Operacion;
-import es.cic.curso19.ejerc012.model.OperacionException;
-import es.cic.curso19.ejerc012.model.TipoOperacion;
+import es.cic.curso19.ejerc012.model.excepciones.OperacionException;
+import es.cic.curso19.ejerc012.model.operacion.Operacion;
+import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
 
 
 @Component
@@ -12,10 +12,10 @@ public class OperacionUtil {
 	
 	public <S extends Operacion> void comprobarCantidad(S operacion) {
 		if (operacion.getCantidad()<= 0) {
-			throw new OperacionException(operacion.getId(),"El importe de la transferencia no es válido");
+			throw new OperacionException(operacion.getId(),"el importe no es válido");
 		}
 		if (operacion.getCuenta().getImporte() < operacion.getCantidad() - 50) {
-			throw new OperacionException(operacion.getId(),"El saldo es insuficiente");
+			throw new OperacionException(operacion.getId(),"el saldo es insuficiente");
 		}
 		if (operacion.getCuenta().getImporte() <= -50) {
 			throw new OperacionException(operacion.getId(),"¡Está en números rojos!");
