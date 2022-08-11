@@ -27,6 +27,7 @@ public class Operacion {
 	@Min(0)
 	private double cantidad;
 	
+	@NotNull
 	private TipoOperacion tipoOperacion;
 	private boolean activa;
 	

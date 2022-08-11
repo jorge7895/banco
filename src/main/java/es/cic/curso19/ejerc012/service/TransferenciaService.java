@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import es.cic.curso19.ejerc012.model.acciones.Transferencia;
 import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.model.excepciones.OperacionException;
 import es.cic.curso19.ejerc012.model.operacion.Operacion;
 import es.cic.curso19.ejerc012.repository.TransferenciaRepository;
 import es.cic.curso19.ejerc012.util.CuentaUtil;
@@ -32,10 +33,12 @@ public class TransferenciaService {
 			cuentaUtil.cuentaValida(transferencia.getCuentaAjenaInterna());
 			cuentaUtil.cuentasDistintas(cuenta, transferencia.getCuentaAjenaInterna().getNumeroCuenta());
 			
-		}else {
+		}else if (transferencia.getCuentaAjenaExterna() != null){
 			
 			cuentaUtil.cuentasDistintas(cuenta, transferencia.getCuentaAjenaExterna());
 			
+		}else {
+			throw new OperacionException(operacion.getId(), "las cuentas no son válidas");
 		}
 		
 		operacionUtil.actualizarSaldo(operacion);

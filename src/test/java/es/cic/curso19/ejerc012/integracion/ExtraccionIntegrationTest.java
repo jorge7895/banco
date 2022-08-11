@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012;
+package es.cic.curso19.ejerc012.integracion;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.cic.curso19.ejerc012.model.acciones.Transferencia;
+import es.cic.curso19.ejerc012.model.acciones.Extraccion;
 import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
 import es.cic.curso19.ejerc012.model.operacion.Operacion;
 import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
@@ -29,7 +29,8 @@ import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-public class TransferenciaIntegrationTest {
+class ExtraccionIntegrationTest {
+
 	@Autowired
 	private MockMvc mvc;
 	
@@ -42,7 +43,7 @@ public class TransferenciaIntegrationTest {
 	private Cuenta cuenta01;
 	private Cuenta cuenta02;
 	private Operacion operacion;
-	private Transferencia transferencia;
+	private Extraccion extraccion;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -60,95 +61,97 @@ public class TransferenciaIntegrationTest {
 		
 		operacion = new Operacion();
 		operacion.setCuenta(cuenta01);
-		operacion.setTipoOperacion(TipoOperacion.TRANSFERENCIA);
+		operacion.setTipoOperacion(TipoOperacion.EXTRACCION);
 		operacion.setCantidad(200);
 		operacion.setActiva(true);
 		
-		transferencia = new Transferencia();
-		transferencia.setActiva(true);
-		transferencia.setOperacion(operacion);
-		transferencia.setCuentaAjenaInterna(cuenta02);
+		extraccion = new Extraccion();
+		extraccion.setActiva(true);
+		extraccion.setOperacion(operacion);
+	}
+	
+	@Test
+	void testCreateExtraccion() throws Exception {
+		
+		mvc.perform(post("/operacion/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is2xxSuccessful())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.operacion.cuenta.importe", is(800.0)));
+	}
+	
+	@Test
+	void testCreateExtraccionNumerosRojos() throws Exception {
+		
+		operacion.setCantidad(1049);
+		extraccion.setOperacion(operacion);
+		
+		mvc.perform(post("/operacion/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is2xxSuccessful())
+		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(jsonPath("$.operacion.cuenta.importe", is(-49.0)));
+	}
+	
+	@Test
+	void testCreateExtraccionSinFondos() throws Exception {
+		
+		operacion.setCantidad(1051);
+		extraccion.setOperacion(operacion);
+		
+		mvc.perform(post("/operacion/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is(1001));
+	}
+	
+	@Test
+	void testCreateExtraccionNegativa() throws Exception {
+		
+		operacion.setCantidad(-1051);
+		extraccion.setOperacion(operacion);
+		
+		mvc.perform(post("/operacion/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is(1001));
+	}
+	
+	@Test
+	void testCreateExtraccionCuentaNull() throws Exception {
+		
+		operacion.setCuenta(null);
+		extraccion.setOperacion(operacion);
+		
+		mvc.perform(post("/operacion/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is(1001));
+	}
+	
+	@Test
+	void testCreateExtraccionOperacionNull() throws Exception {
+		
+		extraccion.setOperacion(null);
+		
+		mvc.perform(post("/operacion/extraccion")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(extraccion)))
+		.andDo(print())
+		.andExpect(status().is(1001));
 	}
 
-	@Test
-	void testCreateTransferenciaInterna() throws Exception {
-		
-		mvc.perform(post("/operacion/transferencia")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(transferencia)))
-		.andDo(print())
-		.andExpect(status().is2xxSuccessful())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$.operacion.cuenta.importe", is(800.0)));
-	}
-	
-	@Test
-	void testCreateTransferenciaInternaCuentaMal() throws Exception {
-		
-		cuenta02.setNumeroCuenta("esta cuenta no vale");
-		transferencia.setCuentaAjenaInterna(cuenta02);
-		
-		mvc.perform(post("/operacion/transferencia")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(transferencia)))
-		.andDo(print())
-		.andExpect(status().is(1002));
-	}
-	
-	@Test
-	void testCreateTransferenciaExterna() throws Exception {
-		
-		transferencia.setCuentaAjenaExterna("12345678912345678913");
-		
-		mvc.perform(post("/operacion/transferencia")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(transferencia)))
-		.andDo(print())
-		.andExpect(status().is2xxSuccessful())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$.operacion.cuenta.importe", is(800.0)));
-	}
-	
-	@Test
-	void testCreateTransferenciaCuentaMal() throws Exception {
-		
-		cuenta01.setNumeroCuenta("esta cuenta esta mal");
-		operacion.setCuenta(cuenta01);
-		
-		mvc.perform(post("/operacion/transferencia")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(transferencia)))
-		.andDo(print())
-		.andExpect(status().is(1002));
-	}
-	
-	@Test
-	void testCreateTransferenciaNegativa() throws Exception {
-		
-		operacion.setCantidad(-200);
-		
-		mvc.perform(post("/operacion/transferencia")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(transferencia)))
-		.andDo(print())
-		.andExpect(status().is(1002));
-	}
-	
-	@Test
-	void testRecibirTransferencia() throws Exception {
-		
-		mvc.perform(post("/operacion/ingreso/transferencia")
-				.accept(MediaType.APPLICATION_JSON)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(transferencia)))
-		.andDo(print())
-		.andExpect(status().is2xxSuccessful())
-		.andExpect(content().contentType(MediaType.APPLICATION_JSON))
-		.andExpect(jsonPath("$.operacion.cuenta.importe", is(1200.0)));
-	}
 }
