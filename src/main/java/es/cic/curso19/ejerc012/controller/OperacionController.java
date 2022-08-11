@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,7 @@ import es.cic.curso19.ejerc012.model.acciones.Extraccion;
 import es.cic.curso19.ejerc012.model.acciones.Ingreso;
 import es.cic.curso19.ejerc012.model.acciones.Transferencia;
 import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.model.excepciones.OperacionException;
 import es.cic.curso19.ejerc012.model.operacion.Operacion;
 import es.cic.curso19.ejerc012.service.ExtraccionService;
 import es.cic.curso19.ejerc012.service.IngresoService;
@@ -40,9 +43,13 @@ public class OperacionController {
 	private TransferenciaService transferenciaService;
 
 	@PostMapping("/ingreso")
-	public ResponseEntity<Ingreso> crearIngreso(@RequestBody Ingreso ingreso) {
+	public ResponseEntity<Ingreso> crearIngreso(@Validated @RequestBody Ingreso ingreso, BindingResult errors) {
 
 		try {
+			
+			if (errors.hasErrors()) {
+				throw new OperacionException(ingreso.getId(), ingreso.toString());
+			}
 			ingreso = ingresoService.crear(ingreso);
 
 			return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(ingreso);
@@ -61,8 +68,12 @@ public class OperacionController {
 	}
 
 	@PostMapping("/extraccion")
-	public ResponseEntity<Extraccion> crearExtraccion(@RequestBody Extraccion extraccion) {
+	public ResponseEntity<Extraccion> crearExtraccion(@Validated @RequestBody Extraccion extraccion, BindingResult errors) {
 		try {
+			
+			if (errors.hasErrors()) {
+				throw new OperacionException(extraccion.getId(), extraccion.toString());
+			}
 			extraccion = extraccionService.crear(extraccion);
 
 			return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(extraccion);
@@ -79,9 +90,12 @@ public class OperacionController {
 	}
 
 	@PostMapping("/transferencia")
-	public ResponseEntity<Transferencia> crearTransferencia(@RequestBody Transferencia transferencia) {
+	public ResponseEntity<Transferencia> crearTransferencia(@Validated @RequestBody Transferencia transferencia, BindingResult errors) {
 
 		try {
+			if (errors.hasErrors()) {
+				throw new OperacionException(transferencia.getId(), transferencia.toString());
+			}
 			transferencia = transferenciaService.crear(transferencia);
 
 			return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(transferencia);
@@ -98,9 +112,12 @@ public class OperacionController {
 	}
 
 	@PostMapping("/ingreso/transferencia")
-	public ResponseEntity<Transferencia> recibirTransferencia(@RequestBody Transferencia transferencia) {
+	public ResponseEntity<Transferencia> recibirTransferencia(@Validated @RequestBody Transferencia transferencia, BindingResult errors) {
 
 		try {
+			if (errors.hasErrors()) {
+				throw new OperacionException(transferencia.getId(), transferencia.toString());
+			}
 			transferencia = transferenciaService.recibir(transferencia);
 
 			return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(transferencia);
@@ -117,9 +134,12 @@ public class OperacionController {
 	}
 
 	@GetMapping("/movimientos/{cuenta}")
-	public ResponseEntity<List<Operacion>> movimientosCuenta(@RequestBody Cuenta cuenta) {
+	public ResponseEntity<List<Operacion>> movimientosCuenta(@Validated @RequestBody Cuenta cuenta, BindingResult errors) {
 
 		try {
+			if (errors.hasErrors()) {
+				throw new OperacionException(cuenta.getId(), cuenta.toString());
+			}
 			List<Operacion> resultados = operacionService.movimientosCuenta(cuenta);
 	
 			return ResponseEntity.status(HttpStatus.ACCEPTED).contentType(MediaType.APPLICATION_JSON).body(resultados);

@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012;
+package es.cic.curso19.ejerc012.integracion;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -29,7 +29,7 @@ import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
 @SpringBootTest
 @AutoConfigureMockMvc
 @Transactional
-class CuentaRepositoryIntegrationTest {
+class CuentaIntegrationTest {
 
 	@Autowired
 	private MockMvc mvc;
@@ -69,6 +69,32 @@ class CuentaRepositoryIntegrationTest {
 				.andExpect(status().is2xxSuccessful())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON))
 				.andExpect(jsonPath("$.numeroCuenta", is("12345123451234512345")));
+	}
+	
+	@Test
+	public void testCreateNombreVacio() throws Exception {
+		
+		cuenta.setTitular(null);
+
+		mvc.perform(post("/cuentas")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(cuenta)))
+				.andDo(print())
+				.andExpect(status().is(1100));
+	}
+	
+	@Test
+	public void testCreateCuentaVacia() throws Exception {
+		
+		cuenta.setNumeroCuenta(null);
+
+		mvc.perform(post("/cuentas")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(cuenta)))
+				.andDo(print())
+				.andExpect(status().is(1100));
 	}
 	
 	@Test

@@ -2,7 +2,6 @@ package es.cic.curso19.ejerc012.model.acciones;
 
 import java.util.Objects;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -27,7 +26,6 @@ public class Transferencia {
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	private Cuenta cuentaAjenaInterna;
 	
-	@Column(nullable = true)
 	private String cuentaAjenaExterna;
 	
 	private boolean activa;

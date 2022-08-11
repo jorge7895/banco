@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012;
+package es.cic.curso19.ejerc012.integracion;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

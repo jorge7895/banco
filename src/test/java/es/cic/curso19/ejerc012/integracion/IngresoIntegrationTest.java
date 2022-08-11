@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012;
+package es.cic.curso19.ejerc012.integracion;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -87,6 +87,32 @@ class IngresoIntegrationTest {
 	void testCreateIngresoNegativo() throws Exception {
 		
 		operacion.setCantidad(-200);
+		
+		mvc.perform(post("/operacion/ingreso")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(ingreso)))
+		.andDo(print())
+		.andExpect(status().is(1000));
+	}
+	
+	@Test
+	void testCreateIngresoOperacionNull() throws Exception {
+		
+		ingreso.setOperacion(null);
+		
+		mvc.perform(post("/operacion/ingreso")
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(ingreso)))
+		.andDo(print())
+		.andExpect(status().is(1000));
+	}
+	
+	@Test
+	void testCreateIngresoCuentaNull() throws Exception {
+		
+		operacion.setCuenta(null);
 		
 		mvc.perform(post("/operacion/ingreso")
 				.accept(MediaType.APPLICATION_JSON)
