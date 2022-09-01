@@ -2,6 +2,8 @@ package es.cic.curso19.ejerc012.controller;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,12 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import es.cic.curso19.ejerc012.model.acciones.Extraccion;
-import es.cic.curso19.ejerc012.model.acciones.Ingreso;
-import es.cic.curso19.ejerc012.model.acciones.Transferencia;
-import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
-import es.cic.curso19.ejerc012.model.excepciones.OperacionException;
-import es.cic.curso19.ejerc012.model.operacion.Operacion;
+import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.Extraccion;
+import es.cic.curso19.ejerc012.model.Ingreso;
+import es.cic.curso19.ejerc012.model.Operacion;
+import es.cic.curso19.ejerc012.model.OperacionException;
+import es.cic.curso19.ejerc012.model.Transferencia;
 import es.cic.curso19.ejerc012.service.ExtraccionService;
 import es.cic.curso19.ejerc012.service.IngresoService;
 import es.cic.curso19.ejerc012.service.OperacionService;
@@ -30,6 +32,8 @@ import es.cic.curso19.ejerc012.service.TransferenciaService;
 @RequestMapping(path = "/operacion")
 public class OperacionController {
 
+	private Logger LOGGER = LogManager.getLogger(OperacionController.class);
+	
 	@Autowired
 	private OperacionService operacionService;
 
@@ -44,6 +48,8 @@ public class OperacionController {
 
 	@PostMapping("/ingreso")
 	public ResponseEntity<Ingreso> crearIngreso(@Validated @RequestBody Ingreso ingreso, BindingResult errors) {
+		
+		LOGGER.info("Creando Ingreso");
 
 		try {
 			
@@ -56,6 +62,8 @@ public class OperacionController {
 			
 
 		} catch (RuntimeException Re) {
+			
+			LOGGER.error("Error al crear el Ingreso");
 
 			StringBuilder mensaje = new StringBuilder();
 			mensaje.append("Ingreso fallido. ");
@@ -69,6 +77,9 @@ public class OperacionController {
 
 	@PostMapping("/extraccion")
 	public ResponseEntity<Extraccion> crearExtraccion(@Validated @RequestBody Extraccion extraccion, BindingResult errors) {
+		
+		LOGGER.info("Creando Extracción");
+		
 		try {
 			
 			if (errors.hasErrors()) {
@@ -79,6 +90,8 @@ public class OperacionController {
 			return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(extraccion);
 
 		} catch (RuntimeException Re) {
+			
+			LOGGER.error("Error al crear la extracción");
 
 			StringBuilder mensaje = new StringBuilder();
 			mensaje.append("Extracción fallida. ");

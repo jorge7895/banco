@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012.model.operacion;
+package es.cic.curso19.ejerc012.util;
 
 public enum TipoOperacion {
 

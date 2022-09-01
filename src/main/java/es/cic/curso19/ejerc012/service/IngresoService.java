@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.cic.curso19.ejerc012.model.acciones.Ingreso;
+import es.cic.curso19.ejerc012.model.Ingreso;
 import es.cic.curso19.ejerc012.repository.IngresoRepository;
 import es.cic.curso19.ejerc012.util.CuentaUtil;
 import es.cic.curso19.ejerc012.util.OperacionUtil;
@@ -13,7 +13,7 @@ import es.cic.curso19.ejerc012.util.OperacionUtil;
 @Service
 public class IngresoService {
 	
-	Logger LOGGER = LogManager.getLogger(IngresoService.class);
+	private Logger LOGGER = LogManager.getLogger(IngresoService.class);
 
 	@Autowired
 	private IngresoRepository ingresoRepository;

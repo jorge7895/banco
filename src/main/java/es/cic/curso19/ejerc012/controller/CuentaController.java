@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
-import es.cic.curso19.ejerc012.model.excepciones.CuentaException;
+import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.CuentaException;
 import es.cic.curso19.ejerc012.service.CuentaService;
 
 @RestController

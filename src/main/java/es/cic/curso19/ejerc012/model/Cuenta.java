@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012.model.cuenta;
+package es.cic.curso19.ejerc012.model;
 
 import java.util.Objects;
 
@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Version;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -25,6 +26,9 @@ public class Cuenta {
 	@Min(0)
 	@NotNull
 	private double importe;
+	
+	@Version
+	private long version;
 
 	public Long getId() {
 		return id;

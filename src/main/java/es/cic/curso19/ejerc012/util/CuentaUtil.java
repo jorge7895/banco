@@ -1,7 +1,7 @@
 package es.cic.curso19.ejerc012.util;
 
-import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
-import es.cic.curso19.ejerc012.model.excepciones.CuentaException;
+import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.CuentaException;
 
 public class CuentaUtil {
 		

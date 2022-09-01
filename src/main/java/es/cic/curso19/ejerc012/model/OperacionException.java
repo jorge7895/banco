@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012.model.excepciones;
+package es.cic.curso19.ejerc012.model;
 
 @SuppressWarnings("serial")
 public class OperacionException extends RuntimeException{
