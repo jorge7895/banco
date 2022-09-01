@@ -21,10 +21,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import es.cic.curso19.ejerc012.model.acciones.Transferencia;
-import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
-import es.cic.curso19.ejerc012.model.operacion.Operacion;
-import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
+import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.Operacion;
+import es.cic.curso19.ejerc012.model.Transferencia;
+import es.cic.curso19.ejerc012.util.TipoOperacion;
 
 @SpringBootTest
 @AutoConfigureMockMvc

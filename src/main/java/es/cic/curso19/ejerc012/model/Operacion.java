@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012.model.operacion;
+package es.cic.curso19.ejerc012.model;
 
 import java.util.Objects;
 
@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
+import es.cic.curso19.ejerc012.util.TipoOperacion;
 
 @Entity
 public class Operacion {

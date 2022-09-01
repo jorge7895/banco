@@ -1,4 +1,4 @@
-package es.cic.curso19.ejerc012.model.acciones;
+package es.cic.curso19.ejerc012.model;
 
 import java.util.Objects;
 
@@ -8,10 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
-import es.cic.curso19.ejerc012.model.operacion.Operacion;
-
 @Entity
-public class Extraccion {
+public class Ingreso {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -59,12 +57,13 @@ public class Extraccion {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Extraccion other = (Extraccion) obj;
+		Ingreso other = (Ingreso) obj;
 		return id == other.id;
 	}
 
 	@Override
 	public String toString() {
-		return "Extraccion [id=" + id + ", operacion=" + operacion + ", activa=" + activa + "]";
+		return "Ingreso [id=" + id + ", activa=" + activa + "]";
 	}
+
 }

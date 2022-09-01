@@ -3,7 +3,7 @@ package es.cic.curso19.ejerc012.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.cic.curso19.ejerc012.model.acciones.Extraccion;
+import es.cic.curso19.ejerc012.model.Extraccion;
 import es.cic.curso19.ejerc012.repository.ExtraccionRepository;
 import es.cic.curso19.ejerc012.util.CuentaUtil;
 import es.cic.curso19.ejerc012.util.OperacionUtil;
@@ -23,7 +23,7 @@ public class ExtraccionService {
 		cuentaUtil.cuentaValida(extraccion.getOperacion().getCuenta());
 		operacionUtil.actualizarSaldo(extraccion.getOperacion());
 		
-		return extraccionRepository.crear(extraccion);
+		return extraccionRepository.save(extraccion);
 		
 	}
 }

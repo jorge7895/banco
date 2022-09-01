@@ -7,7 +7,7 @@ import javax.persistence.PersistenceContext;
 
 import org.springframework.stereotype.Repository;
 
-import es.cic.curso19.ejerc012.model.acciones.Transferencia;
+import es.cic.curso19.ejerc012.model.Transferencia;
 
 @Repository
 public class TransferenciaRepository {

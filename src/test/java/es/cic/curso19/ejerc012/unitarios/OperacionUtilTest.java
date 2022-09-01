@@ -6,11 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
-import es.cic.curso19.ejerc012.model.excepciones.OperacionException;
-import es.cic.curso19.ejerc012.model.operacion.Operacion;
-import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
+import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.Operacion;
+import es.cic.curso19.ejerc012.model.OperacionException;
 import es.cic.curso19.ejerc012.util.OperacionUtil;
+import es.cic.curso19.ejerc012.util.TipoOperacion;
 
 class OperacionUtilTest {
 	

@@ -2,9 +2,8 @@ package es.cic.curso19.ejerc012.util;
 
 import org.springframework.stereotype.Component;
 
-import es.cic.curso19.ejerc012.model.excepciones.OperacionException;
-import es.cic.curso19.ejerc012.model.operacion.Operacion;
-import es.cic.curso19.ejerc012.model.operacion.TipoOperacion;
+import es.cic.curso19.ejerc012.model.Operacion;
+import es.cic.curso19.ejerc012.model.OperacionException;
 
 
 @Component

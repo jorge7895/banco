@@ -3,10 +3,10 @@ package es.cic.curso19.ejerc012.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import es.cic.curso19.ejerc012.model.acciones.Transferencia;
-import es.cic.curso19.ejerc012.model.cuenta.Cuenta;
-import es.cic.curso19.ejerc012.model.excepciones.OperacionException;
-import es.cic.curso19.ejerc012.model.operacion.Operacion;
+import es.cic.curso19.ejerc012.model.Cuenta;
+import es.cic.curso19.ejerc012.model.Operacion;
+import es.cic.curso19.ejerc012.model.OperacionException;
+import es.cic.curso19.ejerc012.model.Transferencia;
 import es.cic.curso19.ejerc012.repository.TransferenciaRepository;
 import es.cic.curso19.ejerc012.util.CuentaUtil;
 import es.cic.curso19.ejerc012.util.OperacionUtil;
